@@ -47,6 +47,10 @@ void AZombieProjectPlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Triggered, this, &AZombieProjectPlayerController::OnSetDestinationTriggered);
 		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Completed, this, &AZombieProjectPlayerController::OnSetDestinationReleased);
 		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Canceled, this, &AZombieProjectPlayerController::OnSetDestinationReleased);*/
+		EnhancedInputComponent->BindAction(MoveCameraF, ETriggerEvent::Triggered, this, &AZombieProjectPlayerController::OnMoveForward);
+		EnhancedInputComponent->BindAction(MoveCameraB, ETriggerEvent::Triggered, this, &AZombieProjectPlayerController::OnMoveBackward);
+		EnhancedInputComponent->BindAction(MoveCameraL, ETriggerEvent::Triggered, this, &AZombieProjectPlayerController::OnMoveLeft);
+		EnhancedInputComponent->BindAction(MoveCameraR, ETriggerEvent::Triggered, this, &AZombieProjectPlayerController::OnMoveRight);
 	}
 	else
 	{
@@ -116,4 +120,33 @@ void AZombieProjectPlayerController::OnTouchReleased()
 {
 	bIsTouch = false;
 	OnSetDestinationReleased();
+}
+
+void AZombieProjectPlayerController::OnMoveForward() {
+	APawn* camPawn = GetPawn();
+	if (camPawn != nullptr) {
+		FVector Direction = camPawn->GetActorForwardVector();
+		camPawn->AddMovementInput(Direction, 1.0f);
+	}
+}
+void AZombieProjectPlayerController::OnMoveBackward() {
+	APawn* camPawn = GetPawn();
+	if (camPawn != nullptr) {
+		FVector Direction = camPawn->GetActorForwardVector();
+		camPawn->AddMovementInput(Direction, -1.0f);
+	}
+}
+void AZombieProjectPlayerController::OnMoveLeft() {
+	APawn* camPawn = GetPawn();
+	if (camPawn != nullptr) {
+		FVector Direction = camPawn->GetActorRightVector();
+		camPawn->AddMovementInput(Direction, -1.0f);
+	}
+}
+void AZombieProjectPlayerController::OnMoveRight() {
+	APawn* camPawn = GetPawn();
+	if (camPawn != nullptr) {
+		FVector Direction = camPawn->GetActorRightVector();
+		camPawn->AddMovementInput(Direction, 1.0f);
+	}
 }
