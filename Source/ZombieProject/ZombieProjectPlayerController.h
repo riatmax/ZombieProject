@@ -30,6 +30,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	UNiagaraSystem* FXCursor;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = ActorToSpawn, meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<AActor> ActorToSpawn;
+
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputMappingContext* DefaultMappingContext;

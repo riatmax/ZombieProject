@@ -43,7 +43,8 @@ void AZombieProjectPlayerController::SetupInputComponent()
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
 	{
 		// Setup mouse input events
-		/*EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Started, this, &AZombieProjectPlayerController::OnInputStarted);
+		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Started, this, &AZombieProjectPlayerController::OnInputStarted);
+		/*
 		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Triggered, this, &AZombieProjectPlayerController::OnSetDestinationTriggered);
 		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Completed, this, &AZombieProjectPlayerController::OnSetDestinationReleased);
 		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Canceled, this, &AZombieProjectPlayerController::OnSetDestinationReleased);*/
@@ -60,7 +61,17 @@ void AZombieProjectPlayerController::SetupInputComponent()
 
 void AZombieProjectPlayerController::OnInputStarted()
 {
-	StopMovement();
+	FHitResult Hit;
+	bool bHitSuccessful = false;
+	bHitSuccessful = GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, Hit);
+	if (bHitSuccessful) {
+		CachedDestination = Hit.Location;
+	}
+	if (ActorToSpawn) {
+		FVector Destination = CachedDestination;
+		FRotator SpawnRotation = FRotator::ZeroRotator;
+		GetWorld()->SpawnActor<AActor>(ActorToSpawn, Destination, SpawnRotation);
+	}
 }
 
 // Triggered every frame when the input is held down
