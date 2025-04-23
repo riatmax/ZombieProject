@@ -159,5 +159,4 @@ void AZombieProjectPlayerController::OnMoveRight() {
 	if (camPawn != nullptr) {
 		FVector Direction = camPawn->GetActorRightVector();
 		camPawn->AddMovementInput(Direction, 1.0f);
-	}
-}
+	}}
