@@ -44,14 +44,15 @@ void AZombieProjectPlayerController::SetupInputComponent()
 	{
 		// Setup mouse input events
 		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Started, this, &AZombieProjectPlayerController::OnInputStarted);
-		/*
 		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Triggered, this, &AZombieProjectPlayerController::OnSetDestinationTriggered);
 		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Completed, this, &AZombieProjectPlayerController::OnSetDestinationReleased);
-		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Canceled, this, &AZombieProjectPlayerController::OnSetDestinationReleased);*/
-		EnhancedInputComponent->BindAction(MoveCameraF, ETriggerEvent::Triggered, this, &AZombieProjectPlayerController::OnMoveForward);
-		EnhancedInputComponent->BindAction(MoveCameraB, ETriggerEvent::Triggered, this, &AZombieProjectPlayerController::OnMoveBackward);
-		EnhancedInputComponent->BindAction(MoveCameraL, ETriggerEvent::Triggered, this, &AZombieProjectPlayerController::OnMoveLeft);
-		EnhancedInputComponent->BindAction(MoveCameraR, ETriggerEvent::Triggered, this, &AZombieProjectPlayerController::OnMoveRight);
+		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Canceled, this, &AZombieProjectPlayerController::OnSetDestinationReleased);
+
+		// Setup touch input events
+		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Started, this, &AZombieProjectPlayerController::OnInputStarted);
+		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Triggered, this, &AZombieProjectPlayerController::OnTouchTriggered);
+		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Completed, this, &AZombieProjectPlayerController::OnTouchReleased);
+		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Canceled, this, &AZombieProjectPlayerController::OnTouchReleased);
 	}
 	else
 	{
@@ -61,17 +62,7 @@ void AZombieProjectPlayerController::SetupInputComponent()
 
 void AZombieProjectPlayerController::OnInputStarted()
 {
-	FHitResult Hit;
-	bool bHitSuccessful = false;
-	bHitSuccessful = GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, Hit);
-	if (bHitSuccessful) {
-		CachedDestination = Hit.Location;
-	}
-	if (ActorToSpawn) {
-		FVector Destination = CachedDestination;
-		FRotator SpawnRotation = FRotator::ZeroRotator;
-		GetWorld()->SpawnActor<AActor>(ActorToSpawn, Destination, SpawnRotation);
-	}
+	StopMovement();
 }
 
 // Triggered every frame when the input is held down
@@ -132,31 +123,3 @@ void AZombieProjectPlayerController::OnTouchReleased()
 	bIsTouch = false;
 	OnSetDestinationReleased();
 }
-
-void AZombieProjectPlayerController::OnMoveForward() {
-	APawn* camPawn = GetPawn();
-	if (camPawn != nullptr) {
-		FVector Direction = camPawn->GetActorForwardVector();
-		camPawn->AddMovementInput(Direction, 1.0f);
-	}
-}
-void AZombieProjectPlayerController::OnMoveBackward() {
-	APawn* camPawn = GetPawn();
-	if (camPawn != nullptr) {
-		FVector Direction = camPawn->GetActorForwardVector();
-		camPawn->AddMovementInput(Direction, -1.0f);
-	}
-}
-void AZombieProjectPlayerController::OnMoveLeft() {
-	APawn* camPawn = GetPawn();
-	if (camPawn != nullptr) {
-		FVector Direction = camPawn->GetActorRightVector();
-		camPawn->AddMovementInput(Direction, -1.0f);
-	}
-}
-void AZombieProjectPlayerController::OnMoveRight() {
-	APawn* camPawn = GetPawn();
-	if (camPawn != nullptr) {
-		FVector Direction = camPawn->GetActorRightVector();
-		camPawn->AddMovementInput(Direction, 1.0f);
-	}}
